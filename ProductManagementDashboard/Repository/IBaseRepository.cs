@@ -1,4 +1,4 @@
-﻿namespace User_Mangment_System.Repository
+﻿namespace ProductManagementDashboard.Repository
 {
 
         public interface IBaseRepository<T> where T : class

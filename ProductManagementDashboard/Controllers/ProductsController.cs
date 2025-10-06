@@ -1,98 +1,105 @@
 ﻿using DataLayer.Models;
-using DataLayer.Repository;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using User_Mangment_System.Dtos;
+using ProductManagementDashboard.Dtos;
+using ProductManagementDashboard.Repository;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ProductsController : ControllerBase
+
+
+namespace ProductManagementDashboard.Controllers
 {
-    private readonly ProductRepository _productRepo;
 
-    public ProductsController(ProductRepository productRepo)
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
-        _productRepo = productRepo;
-    }
+        private readonly ProductRepository _productRepo;
 
-    // GET: api/products
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var products = await _productRepo.GetProductsWithCategoriesAsync();
-        return Ok(products);
-    }
-
-    // GET: api/products/{id}
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var product = await _productRepo.GetProductByIdAsync(id);
-        if (product == null)
-            return NotFound(new { message = "Product not found" });
-
-        return Ok(product);
-    }
-
-    // POST: api/products
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ProductCreateDTO dto)
-    {
-        var product = new Product
+        public ProductsController(ProductRepository productRepo)
         {
-            Name = dto.Name,
-            Description = dto.Description,
-            Price = dto.Price,
-            StockQuantity = dto.StockQuantity,
-            ImageUrl = dto.ImageUrl
-        };
+            _productRepo = productRepo;
+        }
 
-        await _productRepo.AddProductAsync(product);
-        return Ok(new { message = "Product created successfully" });
-    }
+        // GET: api/products
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _productRepo.GetProductsWithCategoriesAsync();
+            return Ok(products);
+        }
 
-    // PUT: api/products/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ProductUpdateDTO dto)
-    {
-        var product = await _productRepo.GetProductByIdAsync(id);
-        if (product == null)
-            return NotFound(new { message = "Product not found" });
+        // GET: api/products/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var product = await _productRepo.GetProductByIdAsync(id);
+            if (product == null)
+                return NotFound(new { message = "Product not found" });
 
-        // Map DTO to entity
-        product.Name = dto.Name;
-        product.Description = dto.Description;
-        product.Price = dto.Price;
-        product.StockQuantity = dto.StockQuantity;
-        product.ImageUrl = dto.ImageUrl;
+            return Ok(product);
+        }
 
-        await _productRepo.UpdateProductAsync(product);
-        return Ok(new { message = "Product updated successfully" });
-    }
-    [HttpPatch("{id}/update-stock")]
-    public async Task<IActionResult> UpdateStock(int id, [FromBody] ProductUpdateDTO dto)
-    {
-        var product = await _productRepo.GetProductByIdAsync(id);
-        if (product == null)
-            return NotFound(new { message = "Product not found" });
+        // POST: api/products
+        [HttpPost("add product")]
+        public async Task<IActionResult> Create([FromBody] ProductCreateDTO dto)
+        {
+            var product = new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                StockQuantity = dto.StockQuantity,
+                ImageUrl = dto.ImageUrl
+            };
 
-        await _productRepo.UpdateStockAsync(id, dto.StockQuantity);
+            await _productRepo.AddProductAsync(product);
+            return Ok(new { message = "Product created successfully" });
+        }
 
-        return Ok(new { message = "Stock updated successfully" });
-    }
+        // PUT: api/products/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ProductUpdateDTO dto)
+        {
+            var product = await _productRepo.GetProductByIdAsync(id);
+            if (product == null)
+                return NotFound(new { message = "Product not found" });
+
+            // Map DTO to entity
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.Price = dto.Price;
+            product.StockQuantity = dto.StockQuantity;
+            product.ImageUrl = dto.ImageUrl;
+
+            await _productRepo.UpdateProductAsync(product);
+            return Ok(new { message = "Product updated successfully" });
+        }
+        [HttpPatch("{id}/update-stock")]
+        public async Task<IActionResult> UpdateStock(int id, [FromBody] ProductUpdateDTO dto)
+        {
+            var product = await _productRepo.GetProductByIdAsync(id);
+            if (product == null)
+                return NotFound(new { message = "Product not found" });
+
+            await _productRepo.UpdateStockAsync(id, dto.StockQuantity);
+
+            return Ok(new { message = "Stock updated successfully" });
+        }
 
 
 
 
-// DELETE: api/products/{id}
-[HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var deleted = await _productRepo.DeleteProductAsync(id);
-        if (!deleted)
-            return NotFound(new { message = "Product not found" });
+        // DELETE: api/products/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _productRepo.DeleteProductAsync(id);
+            if (!deleted)
+                return NotFound(new { message = "Product not found" });
 
-        return Ok(new { message = "Product deleted successfully" });
+            return Ok(new { message = "Product deleted successfully" });
+        }
     }
 }
-

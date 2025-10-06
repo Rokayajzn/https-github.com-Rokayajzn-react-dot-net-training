@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DataLayer;
 
-namespace DataLayer.Repository
+
+namespace ProductManagementDashboard.Repository
 {
     public class ProductRepository : BaseRepository<Product>
     {
@@ -11,7 +13,7 @@ namespace DataLayer.Repository
 
         public ProductRepository(DbModel context) : base(context)
         {
-            _context = context;
+        
         }
 
         // Get all products with categories

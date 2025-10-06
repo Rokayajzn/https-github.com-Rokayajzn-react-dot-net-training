@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using User_Mangment_System.Repository;
+using DataLayer;
 
-namespace DataLayer.Repository
+
+namespace ProductManagementDashboard.Repository
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {

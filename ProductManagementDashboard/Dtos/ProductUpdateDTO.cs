@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace User_Mangment_System.Dtos
+namespace ProductManagementDashboard.Dtos;
+
+public class ProductUpdateDTO
 {
-    public class ProductUpdateDTO
-    {
-        [Required, MaxLength(200)]
-        public string Name { get; set; }
+    [Required, MaxLength(200)]
+    public string Name { get; set; }
 
-        [Required, MaxLength(200)]
-        public string Description { get; set; }
+    [Required, MaxLength(200)]
+    public string Description { get; set; }
 
-        public int StockQuantity { get; set; }
+    public int StockQuantity { get; set; }
 
-        [Required]
-        public decimal Price { get; set; }
+    [Required]
+    public decimal Price { get; set; }
 
-        public string ImageUrl { get; set; }
-    }
+    public string ImageUrl { get; set; }
 }
