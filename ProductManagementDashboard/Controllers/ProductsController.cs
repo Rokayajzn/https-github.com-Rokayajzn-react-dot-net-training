@@ -35,7 +35,7 @@ public class ProductsController : ControllerBase
     }
 
     // POST: api/products
-    [HttpPost]
+    [HttpPost("add product")]
     public async Task<IActionResult> Create([FromBody] ProductCreateDTO dto)
     {
         var product = new Product
