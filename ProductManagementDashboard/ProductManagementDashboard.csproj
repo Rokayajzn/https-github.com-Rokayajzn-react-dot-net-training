@@ -1,106 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>User_Mangment_System</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>ProductManagementDashboard</RootNamespace>
+		<AssemblyName>ProductManagementDashboard</AssemblyName>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    <PackageReference Include="UmbracoCms.Core" Version="8.18.15" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- EF Core + SQL Server + Tools (design-time) -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 
-  <ItemGroup>
-    <Compile Remove="NewFolder1\**" />
-    <Content Remove="NewFolder1\**" />
-    <EmbeddedResource Remove="NewFolder1\**" />
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\**" />
-    <None Remove="NewFolder1\**" />
-  </ItemGroup>
+		<!-- Swagger/OpenAPI -->
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlcese40.dll" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- This path MUST match your actual repo layout -->
+		<ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+	</ItemGroup>
 
+	<!-- Only if your appsettings aren’t copying by default -->
+	<!--
   <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlceqp40.dll" />
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlceme40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlceer40EN.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlcecompact40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\sqlceca40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\Microsoft.VC90.CRT\msvcr90.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x64\native\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlcese40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlceqp40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlceme40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlceer40EN.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlcecompact40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\sqlceca40.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\Microsoft.VC90.CRT\msvcr90.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Lenovo\.nuget\packages\umbraco.sqlserverce\4.0.0.1\build\..\runtimes\win-x86\native\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
-  </ItemGroup>
+  -->
 
 </Project>
