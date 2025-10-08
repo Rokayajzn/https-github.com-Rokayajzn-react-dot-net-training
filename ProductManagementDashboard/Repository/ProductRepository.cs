@@ -1,22 +1,18 @@
-﻿using DataLayer.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using DataLayer;
+using DataLayer.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace ProductManagementDashboard.Repository
 {
-    public class ProductRepository : BaseRepository<Product>
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private readonly DbModel _context;
+        public ProductRepository(DbModel context) : base(context) { }
 
-        public ProductRepository(DbModel context) : base(context)
-        {
-        
-        }
-
-        // Get all products with categories
+        // Read with includes
         public async Task<IEnumerable<Product>> GetProductsWithCategoriesAsync()
         {
             return await _context.Products
@@ -25,7 +21,6 @@ namespace ProductManagementDashboard.Repository
                 .ToListAsync();
         }
 
-        // Get product by Id
         public async Task<Product?> GetProductByIdAsync(int id)
         {
             return await _context.Products
@@ -34,51 +29,50 @@ namespace ProductManagementDashboard.Repository
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        // Add new product
-        public async Task AddProductAsync(Product product)
+        // Create (uses BaseRepository<T> under the hood)
+        public async Task AddProductAsync(Product product, CancellationToken ct = default)
         {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
+            await AddAsync(product);      // base method (no ct yet)
+            await SaveChangesAsync();     // base method
         }
 
-        // Update entire product
-        public async Task UpdateProductAsync(Product product)
+        // Full update
+        public async Task<bool> UpdateProductAsync(Product product, CancellationToken ct = default)
         {
-            var existingProduct = await _context.Products.FindAsync(product.Id);
-            if (existingProduct != null)
-            {
-                existingProduct.Name = product.Name;
-                existingProduct.Description = product.Description;
-                existingProduct.Price = product.Price;
-                existingProduct.StockQuantity = product.StockQuantity;
-                existingProduct.ImageUrl = product.ImageUrl;
+            var existing = await _context.Products.FindAsync(product.Id);
+            if (existing is null) return false;
 
-                _context.Products.Update(existingProduct);
-                await _context.SaveChangesAsync();
-            }
+            existing.Name = product.Name;
+            existing.Description = product.Description;
+            existing.Price = product.Price;
+            existing.StockQuantity = product.StockQuantity;
+            existing.ImageUrl = product.ImageUrl;
+
+            _context.Products.Update(existing);
+            await SaveChangesAsync();
+            return true;
         }
 
-        // Update only stock quantity
-        public async Task UpdateStockAsync(int productId, int newStock)
+        // Partial update (stock only)
+        public async Task<bool> UpdateStockAsync(int productId, int newStock, CancellationToken ct = default)
         {
-            var product = await _context.Products.FindAsync(productId);
-            if (product != null)
-            {
-                product.StockQuantity = newStock;
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
-            }
+            var existing = await _context.Products.FindAsync(productId);
+            if (existing is null) return false;
+
+            existing.StockQuantity = newStock;
+            _context.Products.Update(existing);
+            await SaveChangesAsync();
+            return true;
         }
 
-        // Delete product
-        public async Task<bool> DeleteProductAsync(int id)
+        // Delete
+        public async Task<bool> DeleteProductAsync(int id, CancellationToken ct = default)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-                return false;
+            var existing = await _context.Products.FindAsync(id);
+            if (existing is null) return false;
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            _context.Products.Remove(existing);
+            await SaveChangesAsync();
             return true;
         }
     }

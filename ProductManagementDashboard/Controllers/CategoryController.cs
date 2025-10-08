@@ -1,44 +1,48 @@
-﻿using DataLayer.Models;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProductManagementDashboard.Repository; // <-- keep this one
+using ProductManagementDashboard.Repository;
 using ProductManagementDashboard.Dtos;
+using DataLayer.Models;
 
 namespace ProductManagementDashboard.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class CategoryController : ControllerBase
+    [Route("api/categories")]
+    public class CategoriesController : ControllerBase
     {
-        private readonly CategoryRepository _categoryRepo;
+        private readonly ICategoryRepository _repo;
 
-        public CategoryController(CategoryRepository categoryRepo)
+        public CategoriesController(ICategoryRepository repo)
         {
-            _categoryRepo = categoryRepo;
+            _repo = repo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            var categories = await _categoryRepo.GetCategoriesWithProductsAsync();
-            return Ok(categories);
+            var list = await _repo.GetCategoriesWithProductsAsync();
+            return Ok(list);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(id);
-            if (category == null)
-                return NotFound(new { message = "Category not found" });
-
-            return Ok(category);
+            var cat = await _repo.GetCategoryByIdAsync(id);
+            return cat is null ? NotFound(new { message = "Category not found" }) : Ok(cat);
         }
 
-        [HttpPost("add-category")]
-        public async Task<IActionResult> Create([FromBody] CategoryCreateDto dto)
+        [HttpPost] // POST /api/categories
+        public async Task<IActionResult> Create([FromBody] CategoryCreateDto dto, CancellationToken ct)
         {
+            if (dto is null) return BadRequest(new { message = "Body is required" });
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
             var category = new Category { Name = dto.Name };
-            await _categoryRepo.AddCategoryAsync(category);
-            return Ok(new { message = "Category created successfully" });
+            await _repo.AddCategoryAsync(category, ct);
+
+            return CreatedAtAction(nameof(GetById), new { id = category.Id },
+                new { message = "Category created successfully", id = category.Id });
         }
     }
 }

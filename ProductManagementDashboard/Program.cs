@@ -23,7 +23,8 @@ builder.Services.AddDbContext<DbModel>(options =>
         b => b.MigrationsAssembly("DataLayer")));
 
 builder.Services.AddScoped<ProductRepository>();
-builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 
 var app = builder.Build();
 
